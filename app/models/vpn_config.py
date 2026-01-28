@@ -9,7 +9,7 @@ class VpnConfig(Base):
     branch_id = Column(BigInteger, ForeignKey("branches.branch_id"))
 
     username = Column(String(100))
-    password = Column(String(20))
+    password = Column(String(255))
     site = Column(String(10))
     config_file_path = Column(String(255))
     is_active = Column(Boolean, default=True)

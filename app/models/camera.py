@@ -10,7 +10,7 @@ class Camera(Base):
 
     camera_name = Column(String(50))
     camera_type = Column(String(30))   # RTSP, etc.
-    IP = Column(Integer)
+    IP = Column(String(50))
     cam_zone = Column(String(50))
     is_active = Column(Boolean, default=True)
     port = Column(Integer)

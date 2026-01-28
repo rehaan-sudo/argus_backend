@@ -11,13 +11,13 @@ from app.models.camera import Camera
 from app.core.auth.security import hash_password, create_access_token
 from app.core.auth.dependency import get_current_user
 
+
 async def complete_onboarding(
     request: CameraOnboardingRequest,
     db: AsyncSession,
     current_user: User
 ):
-    async with db.begin():
-
+    try:
         # Organization
         org = Organization(name=request.company_name)
         db.add(org)
@@ -45,7 +45,8 @@ async def complete_onboarding(
             username=request.vpn_user_name,
             password=hash_password(request.vpn_password),
             site=request.site_name,
-            config_file_path=request.file_upload
+            config_file_path=request.file_upload,
+            is_active=True
         )
         db.add(vpn)
         await db.flush()
@@ -57,16 +58,25 @@ async def complete_onboarding(
             camera_type="RTSP",
             IP=request.ip_address,
             cam_zone=request.camera_zone,
-            port=request.port
+            port=request.port,
+            is_active=True
         )
         db.add(camera)
 
-    # 🔥 EXTENDED JWT
+        await db.commit()   # ✅ single commit
+
+    except Exception as e:
+        await db.rollback()
+        raise
+   
+    # 🔐 EXTENDED JWT PAYLOAD
     token_payload = {
         "userId": current_user.user_id,
         "roleId": current_user.role_id,
         "organizationId": org.organization_id,
         "branchId": branch.branch_id,
+        "groupId": current_user.group_id,
+        "subGroupId": current_user.sub_group_id,
         "useCases": request.use_cases_list,
         "vpnEnabled": True,
         "onboardingCompleted": True
@@ -76,6 +86,7 @@ async def complete_onboarding(
 
     return {
         "success": True,
+        "message": "Admin onboarding completed",
         "access_token": access_token,
         "nextPage": "/dashboard"
     }

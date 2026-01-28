@@ -6,7 +6,7 @@ from sqlalchemy import select
 
 from app.core.database import get_db
 from app.models.user import User
-
+from app.core.auth.security import SECRET_KEY, ALGORITHM
 security = HTTPBearer()
 
 async def get_current_user(
@@ -18,8 +18,8 @@ async def get_current_user(
     try:
         payload = jwt.decode(
             token,
-            "SUPER_SECRET_KEY",
-            algorithms=["HS256"]
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
         )
         user_id = payload.get("userId")
         if not user_id:
