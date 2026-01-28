@@ -1,9 +1,8 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
-from dotenv import load_dotenv
-import os
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
+
+DATABASE_URL = "postgresql+asyncpg://neondb_owner:npg_zI9qpSQb6AJG@ep-floral-recipe-ahm5iuhu-pooler.c-3.us-east-1.aws.neon.tech/neondb"
+# DATABASE_URL = "postgresql+asyncpg://neondb_owner:npg_R9jTBpxv0uCk@ep-cool-wind-ahacuptw-pooler.c-3.us-east-1.aws.neon.tech/neondb"
 engine = create_async_engine(
     DATABASE_URL,
     echo=True,

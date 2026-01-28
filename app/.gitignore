@@ -3,10 +3,13 @@ venv/
 env/
 .venv/
 .venv
+venv
 
 # Environment variables file (contains passwords, secrets)
 .env
 .env.*
+
+
 
 # Python cache
 __pycache__/

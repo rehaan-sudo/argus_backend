@@ -1,13 +1,15 @@
-class  AdminRegisterRequest:
-    username: str
+from pydantic import BaseModel, EmailStr
+
+
+class AdminRegisterRequest(BaseModel):
+    name: str
     password: str
-    email: str
-    organization_id: int
+    email: EmailStr
+    organization_name: str
+    phone: str
 
 
-class  AdminRegisterResponse:
+class AdminRegisterResponse(BaseModel):
     message: str
     access_token: str
-    token_type: str
-    user: dict
-   
+    refresh_token: str

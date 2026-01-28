@@ -2,6 +2,8 @@ from sqlalchemy import Column, BigInteger, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from .base import Base
 from datetime import datetime
+from .city import City
+from .organization import Organization
 
 class Branch(Base):
     __tablename__ = "branches"

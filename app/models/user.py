@@ -2,6 +2,9 @@ from sqlalchemy import Column, BigInteger, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from .base import Base
 from datetime import datetime
+from .role import Role
+from .organization import Organization
+from .branch import Branch
 
 class User(Base):
     __tablename__ = "users"
