@@ -2,7 +2,7 @@ from sqlalchemy import Column, BigInteger, String, Boolean, DateTime, ForeignKey
 from .base import Base
 from datetime import datetime
 
-class VPNConfig(Base):
+class VpnConfig(Base):
     __tablename__ = "vpn_configs"
 
     vpn_id = Column(BigInteger, primary_key=True, index=True)

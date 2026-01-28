@@ -1,15 +1,20 @@
 from pydantic import BaseModel, EmailStr
-
+from pydantic import  field_validator
 
 class AdminRegisterRequest(BaseModel):
     name: str
-    password: str
     email: EmailStr
-    organization_name: str
+    password: str
+    confirm_password: str
     phone: str
+    organization_name: str
+
+    @field_validator("confirm_password")
+    @classmethod
+    def passwords_match(cls, confirm_password, info):
+        password = info.data.get("password")
+        if password != confirm_password:
+            raise ValueError("Password and confirm password do not match")
+        return confirm_password
 
 
-class AdminRegisterResponse(BaseModel):
-    message: str
-    access_token: str
-    refresh_token: str

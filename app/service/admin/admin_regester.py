@@ -2,10 +2,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.schemas.admin.regester import AdminRegisterRequest
 from app.models.user import User
-from app.core.security import hash_password, create_access_token
+from app.core.auth.security import hash_password, create_access_token
 from sqlalchemy.future import select
 from app.models.organization import Organization
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException
 
 async def get_or_create_organization(
     db: AsyncSession,
@@ -27,7 +27,7 @@ async def get_or_create_organization(
     return org.organization_id
 
 
-async def register_admin(request: AdminRegisterRequest, db: AsyncSession):
+async def register_admin(request: AdminRegisterRequest, db: AsyncSession=Depends(get_db)):
 
     async with db.begin():  # 🔐 transaction start
 
@@ -72,16 +72,19 @@ async def register_admin(request: AdminRegisterRequest, db: AsyncSession):
     # 🔓 transaction auto-commit here
 
     # 5. JWT
-    token = create_access_token({
-        "user_id": new_user.user_id,
-        "role_id": new_user.role_id,
-        "organization_id": new_user.organization_id
+    access_token = create_access_token({
+        "userId": new_user.user_id,
+        "roleId": new_user.role_id,
+        "organizationId": new_user.organization_id,
+        "branchId": None,
+        "groupId": None,
+        "subGroupId": None
     })
 
     return {
         "message": "Admin registered successfully",
-        "access_token": token,
-        "token_type": "Bearer",
+        "accessToken": access_token,
+        "tokenType": "Bearer",
         "user": {
             "id": new_user.user_id,
             "name": new_user.name,
@@ -89,3 +92,4 @@ async def register_admin(request: AdminRegisterRequest, db: AsyncSession):
             "role": "SUPER_ADMIN"
         }
     }
+    

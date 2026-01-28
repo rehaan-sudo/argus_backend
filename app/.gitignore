@@ -8,6 +8,11 @@ venv
 # Environment variables file (contains passwords, secrets)
 .env
 .env.*
+venv/
+app/venv/
+__pycache__/
+.env
+
 
 
 
