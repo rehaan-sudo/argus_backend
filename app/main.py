@@ -1,10 +1,24 @@
 from fastapi import FastAPI
 from app.api.api_collection import api_router
-from app.core.database import engine ,Base
+from app.core.database import engine, Base
+from app.core.exceptions import AppException
+from app.core.exception_handlers import (
+    app_exception_handler,
+    general_exception_handler,
+    value_error_handler,
+    runtime_error_handler
+)
 import app.models  # ensure all models are imported so metadata is registered
 
 
 app = FastAPI(title="Async FastAPI with PostgreSQL")
+
+# Register exception handlers
+app.add_exception_handler(AppException, app_exception_handler)
+app.add_exception_handler(ValueError, value_error_handler)
+app.add_exception_handler(RuntimeError, runtime_error_handler)
+app.add_exception_handler(Exception, general_exception_handler)
+
 
 @app.on_event("startup")
 async def startup():
