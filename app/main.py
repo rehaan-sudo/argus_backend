@@ -9,9 +9,11 @@ from app.core.exception_handlers import (
     runtime_error_handler
 )
 import app.models  # ensure all models are imported so metadata is registered
+from app.core.utils import logger
 
 
 app = FastAPI(title="Async FastAPI with PostgreSQL")
+logger.info("Starting FastAPI application.")
 
 # Register exception handlers
 app.add_exception_handler(AppException, app_exception_handler)

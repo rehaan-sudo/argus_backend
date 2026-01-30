@@ -5,18 +5,19 @@ Provides centralized exception handling and response formatting
 
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
-import logging
+
 from datetime import datetime
 import traceback
+import logging
 from typing import Union
+from app.core.utils import logger
 
 from app.core.exceptions import (
     AppException,
     ErrorCode
 )
 
-# Configure logging
-logger = logging.getLogger(__name__)
+
 
 
 class ExceptionHandler:
@@ -52,18 +53,16 @@ class ExceptionHandler:
         request: Request,
         error_level: str = "error"
     ):
-        """Log exception with context"""
-        log_message = f"""
-Exception caught:
-- Type: {type(exc).__name__}
-- Message: {str(exc)}
-- Method: {request.method}
-- Path: {request.url.path}
-- Timestamp: {datetime.utcnow().isoformat()}
-- Traceback:
-{traceback.format_exc()}
-        """
-        
+        """Log exception with context using central logger"""
+        log_message = (
+            f"Exception caught: "
+            f"Type: {type(exc).__name__} | "
+            f"Message: {str(exc)} | "
+            f"Method: {request.method} | "
+            f"Path: {request.url.path} | "
+            f"Timestamp: {datetime.utcnow().isoformat()}\n"
+            f"Traceback:\n{traceback.format_exc()}"
+        )
         if error_level == "error":
             logger.error(log_message)
         elif error_level == "warning":
@@ -119,6 +118,7 @@ async def value_error_handler(request: Request, exc: ValueError):
         status_code=status.HTTP_400_BAD_REQUEST,
         content=response_data
     )
+
 
 
 async def runtime_error_handler(request: Request, exc: RuntimeError):

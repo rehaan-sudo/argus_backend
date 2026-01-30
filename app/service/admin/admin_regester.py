@@ -33,22 +33,7 @@ async def get_or_create_organization(
 
 
 async def register_admin(request: AdminRegisterRequest, db: AsyncSession=Depends(get_db)):
-    """
-    Register a new admin user
-    
-    Args:
-        request: Admin registration request
-        db: Database session
-    
-    Returns:
-        Registration response with access token
-    
-    Raises:
-        EmailExistsError: If email already registered
-        ValidationError: If password validation fails
-        DatabaseError: If database operations fail
-        OnboardingError: If registration fails
-    """
+ 
     try:
         logger.info(f"Starting admin registration for email: {request.email}")
         

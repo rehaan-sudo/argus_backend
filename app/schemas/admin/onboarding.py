@@ -11,7 +11,7 @@ class CameraOnboardingRequest(BaseModel):
     country: str
     goal : str
 
-    use_cases_list: list[str]
+    use_cases_list: list[int]
 
     vpn_user_name: str
     vpn_password: str
@@ -19,10 +19,10 @@ class CameraOnboardingRequest(BaseModel):
     # vpn path file upload in file_upload variable
     file_upload:str   
 
-    port : int
-    camera_user_name: str
-    camera_password: str
 
+    port : int
+    user_name: str
+    camera_password: str
     camera_name: str
     ip_address: str
     camera_zone: str
