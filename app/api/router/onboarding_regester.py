@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.service.admin.get__user_usecase_stamping import get_user_usecase_stampings
 
 from app.core.database import get_db
 from app.schemas.admin.onboarding import CameraOnboardingRequest
@@ -31,4 +32,14 @@ async def get_info_usecases(
     return await fetch_info_usecases(
         db=db,
         current_user=current_user
+    )
+
+@router.get("/get_user_usecase_stamping")
+async def get_user_usecase_stamping(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return await get_user_usecase_stampings(
+        user_id=current_user.id,
+        db=db
     )

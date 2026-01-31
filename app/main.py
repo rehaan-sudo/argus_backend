@@ -12,6 +12,8 @@ import app.models  # ensure all models are imported so metadata is registered
 from app.core.utils import logger
 from app.api.router.email_verification import router as email_router
 
+from app.core.add_cors_middleware import add_cors_middleware
+
 app = FastAPI(title="Async FastAPI with PostgreSQL")
 logger.info("Starting FastAPI application.")
 
@@ -22,6 +24,8 @@ app.add_exception_handler(RuntimeError, runtime_error_handler)
 app.add_exception_handler(Exception, general_exception_handler)
 
 
+
+
 @app.on_event("startup")
 async def startup():
     async with engine.begin() as conn:
@@ -29,6 +33,7 @@ async def startup():
         await conn.run_sync(Base.metadata.create_all)
 
 
+add_cors_middleware(app)
 app.include_router(api_router, prefix="/api")
 
 

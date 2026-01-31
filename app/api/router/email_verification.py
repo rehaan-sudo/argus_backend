@@ -46,7 +46,7 @@ async def send_otp(
 
 
 @router.post("/verify-otp")
-async def verify_otp(request: VerifyOTPRequest, db: AsyncSession):
+async def verify_otp(request: VerifyOTPRequest,     db: AsyncSession = Depends(get_db)):
     result = await db.execute(
         select(EmailOTP).where(EmailOTP.email == request.email)
     )
