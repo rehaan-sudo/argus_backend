@@ -6,7 +6,7 @@ import logging
 from app.core.database import get_db
 from app.schemas.auth.login import LoginRequest
 from app.models.user import User
-from app.core.auth.security import verify_password, create_access_token
+from app.core.auth.security import verify_password, create_access_token, create_refresh_token
 from app.core.exceptions import ValidationError, OnboardingError
 
 logger = logging.getLogger(__name__)
@@ -40,22 +40,26 @@ async def login_user(
             logger.warning(f"Invalid password for email: {request.email}")
             raise ValidationError(message="Invalid email or password")
 
-        # 2️⃣ Create JWT (SAME payload as register)
-        logger.info("Generating access token")
-        access_token = create_access_token({
+        # 2️⃣ Create JWT tokens with RBAC data
+        logger.info("Generating access and refresh tokens")
+        token_data = {
             "userId": user.user_id,
             "roleId": user.role_id,
             "organizationId": user.organization_id,
             "branchId": user.branch_id,
             "groupId": user.group_id,
             "subGroupId": user.sub_group_id
-        })
+        }
+        
+        access_token = create_access_token(token_data)
+        refresh_token = create_refresh_token(token_data)
 
         logger.info(f"Login successful for email: {request.email}")
 
         return {
             "success": True,
             "message": "Login successful",
+            "refreshToken": refresh_token,
             "accessToken": access_token,
             "tokenType": "Bearer",
             "user": {
